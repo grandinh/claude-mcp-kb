@@ -1,0 +1,55 @@
+{
+  "name": "@grandinharrison/claude-mcp-kb",
+  "version": "0.1.0",
+  "description": "MCP server with persistent knowledge base for MCP development - eliminates repeated research",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "bin": {
+    "claude-mcp-kb": "dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x dist/index.js",
+    "watch": "tsc --watch",
+    "dev": "tsx src/index.ts",
+    "test": "vitest run",
+    "test:watch": "vitest watch",
+    "prepublishOnly": "npm run build",
+    "prepare": "npm run build"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "claude",
+    "knowledge-base",
+    "vector-search",
+    "github",
+    "documentation"
+  ],
+  "author": "Harrison Grandin",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/grandinharrison/claude-mcp-kb.git"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "@octokit/rest": "^21.0.2",
+    "zod": "^3.23.8",
+    "zod-to-json-schema": "^3.23.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.2",
+    "tsx": "^4.19.2",
+    "vitest": "^2.1.8"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
