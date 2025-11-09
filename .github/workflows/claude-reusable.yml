@@ -4,8 +4,11 @@ on:
   workflow_call:
     secrets:
       ANTHROPIC_API_KEY:
-        required: true
-        description: "Anthropic API key for Claude Code"
+        required: false
+        description: "Anthropic API key for Claude Code (alternative to OAuth)"
+      CLAUDE_CODE_OAUTH_TOKEN:
+        required: false
+        description: "Claude Code OAuth token (recommended for Pro/Max users)"
     inputs:
       trigger_phrase:
         description: "Phrase to trigger Claude (default: @claude)"
@@ -49,7 +52,8 @@ jobs:
         id: claude
         uses: anthropics/claude-code-action@v1
         with:
-          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY || '' }}
+          claude_code_oauth_token: ${{ secrets.CLAUDE_CODE_OAUTH_TOKEN || '' }}
           trigger_phrase: ${{ inputs.trigger_phrase }}
           assignee_trigger: ${{ inputs.assignee_trigger }}
           claude_args: ${{ inputs.claude_args }}
