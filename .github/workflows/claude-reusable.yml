@@ -1,0 +1,56 @@
+name: Claude Code (Reusable)
+
+on:
+  workflow_call:
+    secrets:
+      ANTHROPIC_API_KEY:
+        required: true
+        description: "Anthropic API key for Claude Code"
+    inputs:
+      trigger_phrase:
+        description: "Phrase to trigger Claude (default: @claude)"
+        type: string
+        default: "@claude"
+      assignee_trigger:
+        description: "Username to trigger on assignment (optional)"
+        type: string
+        required: false
+      claude_args:
+        description: "Additional Claude CLI arguments"
+        type: string
+        required: false
+      settings:
+        description: "Advanced settings JSON"
+        type: string
+        required: false
+
+jobs:
+  claude:
+    if: |
+      (github.event_name == 'issue_comment' && contains(github.event.comment.body, inputs.trigger_phrase)) ||
+      (github.event_name == 'pull_request_review_comment' && contains(github.event.comment.body, inputs.trigger_phrase)) ||
+      (github.event_name == 'pull_request_review' && contains(github.event.review.body, inputs.trigger_phrase)) ||
+      (github.event_name == 'issues' && (contains(github.event.issue.body, inputs.trigger_phrase) || contains(github.event.issue.title, inputs.trigger_phrase))) ||
+      (github.event_name == 'issues' && inputs.assignee_trigger != '' && github.event.issue.assignee.login == inputs.assignee_trigger)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      id-token: write
+      actions: read
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 1
+
+      - name: Run Claude Code
+        id: claude
+        uses: anthropics/claude-code-action@v1
+        with:
+          anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
+          trigger_phrase: ${{ inputs.trigger_phrase }}
+          assignee_trigger: ${{ inputs.assignee_trigger }}
+          claude_args: ${{ inputs.claude_args }}
+          settings: ${{ inputs.settings }}
